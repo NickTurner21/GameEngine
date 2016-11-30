@@ -1,12 +1,72 @@
-# GameEngine.py
+# Character.py
 # Thorin Schmidt
-# 11/15/2016
+# 11/16/2016
 
 '''module that contains classes and functions to run a game'''
+<<<<<<< HEAD
+import random
+from Character import *
+from Monster import *
+
+def combat(one, two):
+    ''' runs combat bewtween two Characters, one and two'''
+
+    done = False
+    while not done:
+        # User Actions
+        choice = input("""
+                  YOU ARE IN COMBAT!
+                  What do you want to do?
+                  You can:
+                     A)ttack
+                     H)eal
+                     F)lee
+                Your Choice: [A/h/f]: """)
+        if choice.lower() == "f":
+            if one.flee():
+                done = True
+                print(one.name, "Flees in terror!")
+            else:
+                print(one.name, "cannot flee!")
+        elif choice.lower() == "h":
+            one.heal()
+        else:
+            one.attack(two)
+
+        #Computer AI
+        twoChoice = two.combat_choice()
+        if twoChoice == 'a':
+            two.attack(one)
+        if twoChoice == 'h':
+            two.heal()
+        else:
+            two.flee()
+
+        if one.health <= 0 or two.health <= 0:
+            done = True
+
+if __name__ == "__main__":
+    hero = Character(name = "Mr Something")
+    orc = Monster(name='Orcccc')
+    combat(hero, orc)
+    
+'''
+    hero.attack(orc)
+    orc.attack(hero)
+
+    print(hero.health)
+    print(orc.health)
+
+    hero.heal()
+    orc.heal()
+
+    print(hero.health)
+    print(orc.health)
+   ''' 
+=======
 from random import randint
 from character import *
 from monster import *
-from items import *
 
 def combat(one, two):
     ''' runs combat between two Characters, named one and two'''
@@ -61,7 +121,7 @@ def create_player():
     '''  generate a character based on user input
 
         This function contains several local functions, each using a different
-        method of character creation:
+        method of chaaracter creation:
             simple - the user is asked which stat(str, dex, con, int, wis, cha)
                 is most important, and which is least.  most important gets
                 a value of 17, least gets a 9, and the rest get 12. This method
@@ -70,7 +130,7 @@ def create_player():
                 moderate satisfaction for the user.
             hardcore - results are generated randomly using the 3d6 method, in
                 standard stat block sequence: (str, dex, con, int, wis, cha).
-                if none of the stats are over 12, then the entire set is re-
+                if none of the stats are over 13, then the entire set is re-
                 rolled until it does. The user has no control over ability
                 scores. This method is the easiest, but usually has the least
                 satisfaction for the user.
@@ -84,129 +144,10 @@ def create_player():
         return Character()
 
     def hardcore():
-        ''' use 3d6, in order of stats, no rerolls unless all under 13
+        return Character()
 
-            hardcore - results are generated randomly using the 3d6 method, in
-                standard stat block sequence: (str, dex, con, int, wis, cha).
-                if none of the stats are over 12, then the entire set is re-
-                rolled until it does. The user has no control over ability
-                scores. This method is the easiest, but usually has the least
-                satisfaction for the user.'''
-
-        valid = False
-        while not valid:
-
-            gStrength = randint(3,18)
-            gDexterity = randint(3,18)
-            gConstitution = randint(3,18)
-            gIntelligence = randint(3,18)
-            gWisdom = randint(3,18)
-            gCharisma = randint(3,18)
-            if gStrength > 11 or gDexterity > 11 or\
-               gConstitution > 11 or gIntelligence > 11 or\
-               gWisdom > 11 or gCharisma > 11:
-                valid = True
-        gName = input("What is your character's name?: ")
-        gPotionCount = 0
-        gWeapon = Weapon(name = "Stick", base = 3, bonus = 0)
-        gArmor = Armor(name = "Loincloth", base = 0, bonus = 0)
-        gHealth = randint(1,8)
-        if gConstitution > 12:
-            gHealth += 1
-        
-        return Character(name = gName, strength = gStrength,
-                         dexterity = gDexterity, constitution = gConstitution,
-                         intelligence = gIntelligence, wisdom = gWisdom,
-                         charisma = gCharisma, numberOfPotions = gPotionCount,
-                         weapon = gWeapon, armor = gArmor, maxHealth = gHealth)
-
-    def four_d_six(cheat = False):
-        ''' 4d6, use best three, arrange to suit
-
-            6 sets of 4d6 are rolled,
-            in each set, the top three dice are kept and added together.
-            Then these scores are assigned by the user. This method usually
-            has the highest satisfaction for the player, but is also the
-            most complicated, due to the many choices required.'''
-
-        #generate the scores
-        daScores = []
-        for i in range(6):
-            rolls = []
-            for j in range(4):
-                rolls.append(randint(1,6))
-            rolls.remove(min(rolls))
-            daScores.append(sum(rolls))
-
-        #choose strength
-        valid = False
-        while not valid:
-            print("SCORES: ", daScores)
-            inputStr = int(input("Which value for Strength? "))
-            if inputStr in daScores:
-                valid = True
-                daScores.remove(inputStr)
-            else:
-                print("*** not a valid score! *** \n")
-
-        #choose dexterity
-        valid = False
-        while not valid:
-            print("SCORES: ", daScores)
-            inputDex = int(input("Which value for Dexterity? "))
-            if inputDex in daScores:
-                valid = True
-                daScores.remove(inputDex)
-            else:
-                print("*** not a valid score! *** \n")
-
-        #choose constitution
-        valid = False
-        while not valid:
-            print("SCORES: ", daScores)
-            inputCon = int(input("Which value for Constitution? "))
-            if inputCon in daScores:
-                valid = True
-                daScores.remove(inputCon)
-            else:
-                print("*** not a valid score! *** \n")
-
-        #choose Intelligence
-        valid = False
-        while not valid:
-            print("SCORES: ", daScores)
-            inputInt = int(input("Which value for Intelligence? "))
-            if inputInt in daScores:
-                valid = True
-                daScores.remove(inputInt)
-            else:
-                print("*** not a valid score! *** \n")
-        #choose wisdom
-        valid = False
-        while not valid:
-            print("SCORES: ", daScores)
-            inputWis = int(input("Which value for Wisdom? "))
-            if inputWis in daScores:
-                valid = True
-                daScores.remove(inputWis)
-            else:
-                print("*** not a valid score! *** \n")
-
-        #assign charisma
-        inputCha = daScores[0]
-
-        inputName = input("What is your character's name?: ")
-        inputPotionCount = randint(1,4)
-        inputWeapon = Weapon(name = "Longsword", base = 8, bonus = 0)
-        inputArmor = Armor(name = "Leather", base = 3, bonus = 0)
-        inputHealth = randint(1,8)
-            
-        return Character(name=inputName, maxHealth=inputHealth,
-                         strength=inputStr, dexterity=inputDex,
-                         constitution=inputCon, intelligence = inputInt,
-                         wisdom=inputWis, charisma=inputCha,
-                         numberOfPotions=inputPotionCount, weapon=inputWeapon,
-                         armor=inputArmor)
+    def four_d_six():
+        return Character()
 
     #main menu
     satisfied = False
@@ -214,7 +155,7 @@ def create_player():
         valid = False
         while not valid:
             choice = input('''
-                             Player Creation Menu
+                             Character Creation Menu
                             -------------------------
                                1) Hardcore
                                2) Simple
@@ -228,7 +169,7 @@ def create_player():
                 print("*** Invalid Input! ***\n\n")
         if choice == '4':
             help(create_player)
-            continue # pop back to the top, since no character created
+            continue
         elif choice == '3':
             player = four_d_six()
         elif choice == '2':
@@ -252,10 +193,10 @@ def create_player():
 
 if __name__ == "__main__":
     hero = create_player()
-    print(hero)
     #hero = Character()
-    orc = Monster(name = "Dorque da Orc")
+    #orc = Monster(name = "Dorque da Orc")
 
-    combat(hero, orc)
+    #combat(hero, orc)
 
     
+>>>>>>> 6e9f6fb52f8a7151af5a2b799990fedaf24c0147
